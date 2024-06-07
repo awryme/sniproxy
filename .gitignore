@@ -18,7 +18,7 @@
 vendor/
 
 bin/
-sniproxy
+/sniproxy
 
 # Go workspace file
 go.work

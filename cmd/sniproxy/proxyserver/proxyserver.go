@@ -50,12 +50,13 @@ func handleConn(ctx context.Context, logf logging.Logf, proxy *connproxy.Proxy, 
 
 	logf = logging.With(logf, slog.String("conn_id", connId))
 
-	logf("accepted connection, handling", slog.String("raddr", conn.RemoteAddr().String()))
-	err := proxy.HandleConn(ctx, logf, conn)
+	logf("accepted connection", slog.String("raddr", conn.RemoteAddr().String()))
+	conninfo, err := proxy.HandleConn(ctx, logf, conn)
 	success := err == nil
 	logf("connection finished",
 		slog.Bool("success", success),
 		logging.Error(err),
+		conninfo.ToSlog("conn_info"),
 		slog.Duration("elapsed", time.Since(start)),
 	)
 }
