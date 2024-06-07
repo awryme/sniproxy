@@ -1,7 +1,6 @@
 package goticker
 
 import (
-	"log"
 	"time"
 )
 
@@ -18,7 +17,6 @@ func Run(d time.Duration, onTick Action) (stop func()) {
 			case <-ticker.C:
 				onTick(time.Since(start))
 			case <-stopper:
-				log.Println("stopping goticker")
 				return
 			}
 		}
