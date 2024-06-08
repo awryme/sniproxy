@@ -8,6 +8,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/awryme/sniproxy/cmd/sniproxy/proxyserver"
 	"github.com/awryme/sniproxy/pkg/logging"
+	"github.com/oklog/run"
 )
 
 type App struct {
@@ -22,19 +23,25 @@ func (app *App) Run() error {
 	ctx := context.Background()
 	// todo: fix cancelation
 
-	errorQueue := make(chan error, 2)
-	runServer := func(serverType proxyserver.ProxyType, port int) {
-		addr := app.ListenAddr
-		err := proxyserver.Start(ctx, logf, addr, port, serverType)
-		if err != nil {
-			err = fmt.Errorf("running server failed: %w (type = %s, addr = %s, port = %d)", err, serverType, addr, port)
-		}
-		errorQueue <- err
-	}
-	go runServer(proxyserver.ProxyTypeHTTP, app.ListenPortHTTP)
-	go runServer(proxyserver.ProxyTypeHTTPS, app.ListenPortHTTPS)
+	group := new(run.Group)
+	onInterrupt := func(error) {}
 
-	return <-errorQueue
+	makeServer := func(serverType proxyserver.ProxyType, port int) func() error {
+		return func() error {
+			addr := app.ListenAddr
+			err := proxyserver.Start(ctx, logf, addr, port, serverType)
+			if err != nil {
+				return fmt.Errorf("running server failed: %w (type = %s, addr = %s, port = %d)", err, serverType, addr, port)
+			}
+			return nil
+		}
+	}
+	// group.Add(run.SignalHandler(ctx, syscall.SIGINT))
+
+	group.Add(makeServer(proxyserver.ProxyTypeHTTP, app.ListenPortHTTP), onInterrupt)
+	group.Add(makeServer(proxyserver.ProxyTypeHTTPS, app.ListenPortHTTPS), onInterrupt)
+
+	return group.Run()
 }
 
 func main() {
