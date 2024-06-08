@@ -4,8 +4,8 @@ github.com/alecthomas/kong v0.9.0 h1:G5diXxc85KvoV2f0ZRVuMsi45IrBgx9zDNGNj165aPA
 github.com/alecthomas/kong v0.9.0/go.mod h1:Y47y5gKfHp1hDc7CH7OeXgLIpp+Q2m1Ni0L5s3bI8Os=
 github.com/alecthomas/repr v0.4.0 h1:GhI2A8MACjfegCPVq9f1FLvIBS+DrQ2KQBFZP1iFzXc=
 github.com/alecthomas/repr v0.4.0/go.mod h1:Fr0507jx4eOXV7AlPV6AVZLYrLIuIeSOWtW57eE/O/4=
-github.com/awryme/slogf v0.0.0-20240608220603-7e5798ffc78b h1:VJ28D5ym/g6K7L/fSc2j/klwTvIRFwrSWemjUBjTvXw=
-github.com/awryme/slogf v0.0.0-20240608220603-7e5798ffc78b/go.mod h1:zi76nDqAsGPNEOdHaAzzPEacFbfye+mpcFakt5No8UY=
+github.com/awryme/slogf v0.0.0-20240608221655-d06d6e131500 h1:hUpaaDYrP8+EvtH2nP+d6zzJEhGrTo4/0blfIBMjxEM=
+github.com/awryme/slogf v0.0.0-20240608221655-d06d6e131500/go.mod h1:zi76nDqAsGPNEOdHaAzzPEacFbfye+mpcFakt5No8UY=
 github.com/hexops/gotextdiff v1.0.3 h1:gitA9+qJrrTCsiCl7+kh75nPqQt1cx4ZkudSTLoUqJM=
 github.com/hexops/gotextdiff v1.0.3/go.mod h1:pSWU5MAI3yDq+fZBTazCSJysOMbxWL1BSow5/V2vxeg=
 github.com/oklog/run v1.1.0 h1:GEenZ1cK0+q0+wsJew9qUg/DyD8k3JzYsZAi5gYi2mA=
