@@ -6,7 +6,7 @@ import (
 	"io"
 	"log/slog"
 
-	"github.com/awryme/sniproxy/pkg/logging"
+	"github.com/awryme/slogf"
 	"github.com/paultag/sniff/parser"
 )
 
@@ -17,7 +17,7 @@ func New() *Parser {
 	return &Parser{}
 }
 
-func (p *Parser) ParseHeader(logf logging.Logf, reader io.Reader) (hostname string, receivedData []byte, _ error) {
+func (p *Parser) ParseHeader(logf slogf.Logf, reader io.Reader) (hostname string, receivedData []byte, _ error) {
 	headerBuf := make([]byte, tlsHeaderFullLen)
 	headerLen, err := reader.Read(headerBuf)
 	if err != nil {

@@ -11,16 +11,10 @@ type ConnInfo struct {
 	Addr     string
 }
 
-func (info ConnInfo) ToSlog(key string) slog.Attr {
+func (info ConnInfo) LogValue() slog.Value {
 	const emptyInfo = "<empty>"
 	hostname := defaultvalue.For(info.Hostname, emptyInfo)
 	addr := defaultvalue.For(info.Addr, emptyInfo)
 
-	return slog.Attr{
-		Key: key,
-		Value: slog.GroupValue(
-			slog.String("hostname", hostname),
-			slog.String("addr", addr),
-		),
-	}
+	return slog.GroupValue(slog.String("hostname", hostname), slog.String("addr", addr))
 }

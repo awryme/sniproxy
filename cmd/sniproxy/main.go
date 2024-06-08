@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/alecthomas/kong"
+	"github.com/awryme/slogf"
 	"github.com/awryme/sniproxy/cmd/sniproxy/proxyserver"
-	"github.com/awryme/sniproxy/pkg/logging"
 	"github.com/oklog/run"
 )
 
@@ -18,7 +18,7 @@ type App struct {
 }
 
 func (app *App) Run() error {
-	logf := logging.NewLogf(os.Stdout)
+	logf := slogf.New(slogf.DefaultHandler(os.Stdout))
 
 	ctx := context.Background()
 	// todo: fix cancelation

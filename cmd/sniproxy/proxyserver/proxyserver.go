@@ -7,12 +7,12 @@ import (
 	"net"
 	"time"
 
+	"github.com/awryme/slogf"
 	"github.com/awryme/sniproxy/pkg/connproxy"
-	"github.com/awryme/sniproxy/pkg/logging"
 	"github.com/oklog/ulid/v2"
 )
 
-func Start(ctx context.Context, logf logging.Logf, addr string, listenPort int, proxyType ProxyType) error {
+func Start(ctx context.Context, logf slogf.Logf, addr string, listenPort int, proxyType ProxyType) error {
 	headerParser, ok := mapProxyTypeToHeaderParser(proxyType)
 	if !ok {
 		return fmt.Errorf("failed to find conn header parser by proxy type (proxy_type = %s)", proxyType)
@@ -24,7 +24,7 @@ func Start(ctx context.Context, logf logging.Logf, addr string, listenPort int, 
 	}
 
 	proxy := connproxy.New(headerParser, listenPort)
-	logf = logging.With(logf, slog.String("server_type", proxyType.String()))
+	logf = logf.With(slog.String("server_type", proxyType.String()))
 	logf("started new server", slog.String("addr", addr), slog.Int("port", listenPort))
 
 	for {
@@ -33,7 +33,7 @@ func Start(ctx context.Context, logf logging.Logf, addr string, listenPort int, 
 			logf("listener accept error",
 				slog.String("addr", addr),
 				slog.Int("port", listenPort),
-				logging.Error(err),
+				slogf.Error(err),
 			)
 			continue
 		}
@@ -42,21 +42,21 @@ func Start(ctx context.Context, logf logging.Logf, addr string, listenPort int, 
 	}
 }
 
-func handleConn(ctx context.Context, logf logging.Logf, proxy *connproxy.Proxy, conn net.Conn) {
+func handleConn(ctx context.Context, logf slogf.Logf, proxy *connproxy.Proxy, conn net.Conn) {
 	defer conn.Close()
 
 	start := time.Now()
 	connId := ulid.Make().String()
 
-	logf = logging.With(logf, slog.String("conn_id", connId))
+	logf = logf.With(slog.String("conn_id", connId))
 
 	logf("accepted connection", slog.String("raddr", conn.RemoteAddr().String()))
 	conninfo, err := proxy.HandleConn(ctx, logf, conn)
 	success := err == nil
 	logf("connection finished",
 		slog.Bool("success", success),
-		logging.Error(err),
-		conninfo.ToSlog("conn_info"),
+		slogf.Error(err),
+		slogf.Value("conn_info", conninfo),
 		slog.Duration("elapsed", time.Since(start)),
 	)
 }

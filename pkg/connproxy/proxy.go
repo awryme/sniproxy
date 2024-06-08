@@ -7,8 +7,8 @@ import (
 	"net"
 	"time"
 
+	"github.com/awryme/slogf"
 	"github.com/awryme/sniproxy/pkg/dnsresolver"
-	"github.com/awryme/sniproxy/pkg/logging"
 	"github.com/awryme/sniproxy/pkg/networking"
 )
 
@@ -29,7 +29,7 @@ func New(headerParser HeaderParser, port int) *Proxy {
 // HandleConn parses tls message, and tunnels conn based on SNI
 //
 // HandleConn doesn't close the connection
-func (p *Proxy) HandleConn(ctx context.Context, logf logging.Logf, localConn net.Conn) (info ConnInfo, _ error) {
+func (p *Proxy) HandleConn(ctx context.Context, logf slogf.Logf, localConn net.Conn) (info ConnInfo, _ error) {
 	hostname, receivedData, err := p.headerParser.ParseHeader(logf, localConn)
 	if err != nil {
 		return info, fmt.Errorf("parse request header: %w", err)
@@ -57,7 +57,7 @@ func (p *Proxy) HandleConn(ctx context.Context, logf logging.Logf, localConn net
 	}
 	err = twoWayCopy(remoteConn, localConn, func(elapsed time.Duration) {
 		logf("connection ongoing",
-			info.ToSlog("conn_info"),
+			slogf.Value("conn_info", info),
 			slog.Duration("duration", elapsed))
 	})
 	if err != nil {

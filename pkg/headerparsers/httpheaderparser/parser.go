@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/awryme/slogf"
 	"github.com/awryme/sniproxy/pkg/bufkeeper"
-	"github.com/awryme/sniproxy/pkg/logging"
 )
 
 type Parser struct {
@@ -17,7 +17,7 @@ func New() *Parser {
 	return &Parser{}
 }
 
-func (p *Parser) ParseHeader(logf logging.Logf, reader io.Reader) (hostname string, receivedData []byte, _ error) {
+func (p *Parser) ParseHeader(logf slogf.Logf, reader io.Reader) (hostname string, receivedData []byte, _ error) {
 	readBuf := bufkeeper.New(reader)
 
 	req, err := http.ReadRequest(bufio.NewReader(readBuf))
