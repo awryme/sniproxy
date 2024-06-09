@@ -19,6 +19,7 @@ type App struct {
 
 func (app *App) Run() error {
 	logf := slogf.New(slogf.DefaultHandler(os.Stdout))
+	printBuildInfo(logf)
 
 	ctx := context.Background()
 	// todo: fix cancelation
