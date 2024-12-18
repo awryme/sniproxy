@@ -38,13 +38,18 @@ func (p *Parser) ParseHeader(logf slogf.Logf, reader io.Reader) (hostname string
 	logf("received tls request header", slog.Int("header_message_length", int(headerMessageLength)))
 
 	messageBuf := make([]byte, headerMessageLength)
-	messageLength, err := reader.Read(messageBuf)
+	// messageLength, err := reader.Read(messageBuf)
+	// if err != nil {
+	// 	return "", nil, fmt.Errorf("read tls header message: %w", err)
+	// }
+
+	messageLength, err := io.ReadAtLeast(reader, messageBuf, len(messageBuf))
 	if err != nil {
 		return "", nil, fmt.Errorf("read tls header message: %w", err)
 	}
 
 	if messageLength != headerMessageLength {
-		logf("received incomplete tls header message", slog.Int("received", messageLength), slog.Int("expected", headerLen))
+		logf("received incomplete tls header message", slog.Int("received", messageLength), slog.Int("expected", headerMessageLength))
 	}
 
 	messageBuf = messageBuf[:messageLength]
